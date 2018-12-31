@@ -11,14 +11,14 @@ class Store(Resource):
                         help='This field cannot be left blank.')
 
     @jwt_required
-    def get(self, name):
+    def get(self, name: str):
         store = StoreModel.find_by_name(name)
         if store:
             return store.json(), 200
         return {'message': 'Store not found.'}, 404
 
     @fresh_jwt_required
-    def post(self, name):
+    def post(self, name: str):
         claims = get_jwt_claims()
         if not claims['is_admin']:
             return {'message': 'Only admin users can create stores.'}
@@ -35,7 +35,7 @@ class Store(Resource):
         return new_store.json(), 201
 
     @fresh_jwt_required
-    def delete(self, name):
+    def delete(self, name: str):
         claims = get_jwt_claims()
         if not claims['is_admin']:
             return {'message': 'Only admin users can delete stores.'}

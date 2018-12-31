@@ -1,3 +1,4 @@
+from typing import Dict, List
 from database import db
 
 
@@ -10,19 +11,21 @@ class ItemModel(db.Model):
     store_id = db.Column(db.Integer, db.ForeignKey('stores.id'))
     store = db.relationship('StoreModel')
 
-    def __init__(self, name, price, store_id):
+    def __init__(self, name: str, price: float, store_id: int):
         self.name = name
         self.price = price
         self.store_id = store_id
 
-    def json(self):
-        return {'id': self.id,
-                'name': self.name,
-                'price': self.price,
-                'store_id': self.store_id}
+    def json(self) -> Dict:
+        return {
+            'id': self.id,
+            'name': self.name,
+            'price': self.price,
+            'store_id': self.store_id
+        }
 
     @classmethod
-    def find_by_name(cls, name):
+    def find_by_name(cls, name: str):
         return cls.query.filter_by(name=name).first()
 
     def save_to_db(self):
@@ -34,5 +37,5 @@ class ItemModel(db.Model):
         db.session.commit()
 
     @classmethod
-    def find_all(cls):
+    def find_all(cls) -> List:
         return cls.query.all()

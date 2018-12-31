@@ -1,3 +1,4 @@
+from typing import Dict, List
 from database import db
 
 
@@ -8,16 +9,18 @@ class StoreModel(db.Model):
 
     items = db.relationship('ItemModel', lazy='dynamic')
 
-    def __init__(self, name):
+    def __init__(self, name: str):
         self.name = name
 
-    def json(self):
-        return {'id': self.id,
-                'name': self.name,
-                'items': [item.json() for item in self.items.all()]}
+    def json(self) -> Dict:
+        return {
+            'id': self.id,
+            'name': self.name,
+            'items': [item.json() for item in self.items.all()]
+        }
 
     @classmethod
-    def find_by_name(cls, name):
+    def find_by_name(cls, name: str):
         return cls.query.filter_by(name=name).first()
 
     def save_to_db(self):
@@ -29,5 +32,5 @@ class StoreModel(db.Model):
         db.session.commit()
 
     @classmethod
-    def find_all(cls):
+    def find_all(cls) -> List:
         return cls.query.all()

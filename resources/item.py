@@ -17,14 +17,14 @@ class Item(Resource):
                         help='Every item needs a store id.')
 
     @jwt_required
-    def get(self, name):
+    def get(self, name: str):
         item = ItemModel.find_by_name(name)
         if item:
             return item.json(), 200
         return {'message': 'Item not found.'}, 404
 
     @fresh_jwt_required
-    def post(self, name):
+    def post(self, name: str):
         user = UserModel.find_by_id(get_jwt_identity())
         print('{} is trying to create a new item called {}.'.format(user.username, name))
         if ItemModel.find_by_name(name) is not None:
@@ -40,7 +40,7 @@ class Item(Resource):
         return new_item.json(), 201
 
     @fresh_jwt_required
-    def delete(self, name):
+    def delete(self, name: str):
         item = ItemModel.find_by_name(name)
         if item:
             item.delete_from_db()
@@ -48,7 +48,7 @@ class Item(Resource):
         return {'message': 'There is no item called {}.'.format(name)}, 404
 
     @fresh_jwt_required
-    def put(self, name):
+    def put(self, name: str):
         data = Item.parser.parse_args()
         item = ItemModel.find_by_name(name)
         if item is None:
@@ -66,5 +66,7 @@ class ItemList(Resource):
         items = [item.json() for item in ItemModel.find_all()]
         if get_jwt_identity():
             return {'items': items}, 200
-        return {'items': [item['name'] for item in items],
-                'message': 'More data available if you log in.'}, 200
+        return {
+            'items': [item['name'] for item in items],
+            'message': 'More data available if you log in.'
+        }, 200
