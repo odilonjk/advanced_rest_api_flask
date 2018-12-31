@@ -4,7 +4,7 @@ from database import db
 class ItemModel(db.Model):
     __tablename__ = 'items'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(90))
+    name = db.Column(db.String(90), unique=True)
     price = db.Column(db.Float(precision=2))
 
     store_id = db.Column(db.Integer, db.ForeignKey('stores.id'))
