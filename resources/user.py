@@ -12,17 +12,25 @@ from flask_jwt_extended import (
     jwt_required,
 )
 
+BLANK_ERROR = '{} cannot be blank.'
+DELETED = '{} deleted.'
+INVALID_CREDENTIALS = 'Invalid credentials'
+LOGGED_OUT = 'Successfully logged out.'
+USER_ALREADY_EXISTS = 'The user {} already exists.'
+USER_CREATED = 'User {} created successfully.'
+USER_NOT_FOUND = 'User not found'
+
 
 _user_parser = reqparse.RequestParser()
 _user_parser.add_argument('username',
                           type=str,
                           required=True,
-                          help='This field cannot be left blank.')
+                          help=BLANK_ERROR.format('username'))
 
 _user_parser.add_argument('password',
                           type=str,
                           required=True,
-                          help='This field cannot be left blank.')
+                          help=BLANK_ERROR.format('password'))
 
 _user_parser.add_argument('is_admin',
                           type=inputs.boolean,
@@ -35,12 +43,12 @@ class UserRegister(Resource):
         username = data['username']
 
         if UserModel.find_by_username(username):
-            return {'message': 'The user {} already exists.'.format(username)}, 400
+            return {'message': USER_ALREADY_EXISTS.format(username)}, 400
 
         user = UserModel(**data)
         user.save_to_db()
 
-        return {'message': 'User {} created successfully.'.format(username)}, 201
+        return {'message': USER_CREATED.format(username)}, 201
 
 
 class User(Resource):
@@ -48,16 +56,16 @@ class User(Resource):
     def get(cls, user_id: int):
         user = UserModel.find_by_id(user_id)
         if not user:
-            return {'message': 'User not found'}, 404
+            return {'message': USER_NOT_FOUND}, 404
         return user.json()
 
     @classmethod
     def delete(cls, user_id: int):
         user = UserModel.find_by_id(user_id)
         if not user:
-            return {'message': 'User not found'}, 404
+            return {'message': USER_NOT_FOUND}, 404
         user.delete_from_db()
-        return {'message': 'User deleted'}, 200
+        return {'message': DELETED.format(user.username)}, 200
 
 
 class UserLogin(Resource):
@@ -72,7 +80,7 @@ class UserLogin(Resource):
                 'access_token': access_token,
                 'refresh_token': refresh_token
             }, 200
-        return {'message': 'Invalid credentials'}
+        return {'message': INVALID_CREDENTIALS}
 
 
 class UserLogout(Resource):
@@ -80,7 +88,7 @@ class UserLogout(Resource):
     def post(self):
         jti = get_raw_jwt()['jti']
         BLACKLIST.add(jti)
-        return {'message': 'Successfully logged out.'}
+        return {'message': LOGGED_OUT}
 
 
 class TokenRefresh(Resource):
