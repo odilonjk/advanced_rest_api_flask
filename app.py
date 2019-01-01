@@ -10,7 +10,7 @@ from resources.user import (
     UserLogin,
     UserLogout,
     UserModel,
-    TokenRefresh
+    TokenRefresh,
 )
 from resources.item import Item, ItemList
 from resources.store import Store, StoreList
@@ -94,5 +94,6 @@ api.add_resource(TokenRefresh, '/refresh')
 
 if __name__ == '__main__':
     from database import db
+    
     db.init_app(app)
     app.run(port=5000, debug=True)

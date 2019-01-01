@@ -9,7 +9,7 @@ from flask_jwt_extended import (
     get_jwt_identity,
     jwt_refresh_token_required,
     get_raw_jwt,
-    jwt_required
+    jwt_required,
 )
 
 
