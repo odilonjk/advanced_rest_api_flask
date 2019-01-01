@@ -17,15 +17,17 @@ class Store(Resource):
                         required=True,
                         help=BLANK_ERROR.format('new_name'))
 
+    @classmethod
     @jwt_required
-    def get(self, name: str):
+    def get(cls, name: str):
         store = StoreModel.find_by_name(name)
         if store:
             return store.json(), 200
         return {'message': STORE_NOT_FOUND.format(name)}, 404
 
+    @classmethod
     @fresh_jwt_required
-    def post(self, name: str):
+    def post(cls, name: str):
         claims = get_jwt_claims()
         if not claims['is_admin']:
             return {'message': ONLY_ADMIN}
@@ -41,8 +43,9 @@ class Store(Resource):
 
         return new_store.json(), 201
 
+    @classmethod
     @fresh_jwt_required
-    def delete(self, name: str):
+    def delete(cls, name: str):
         claims = get_jwt_claims()
         if not claims['is_admin']:
             return {'message': ONLY_ADMIN}
@@ -54,7 +57,8 @@ class Store(Resource):
 
 
 class StoreList(Resource):
+    @classmethod
     @jwt_required
-    def get(self):
+    def get(cls):
         stores = StoreModel.find_all()
         return [store.json() for store in stores]

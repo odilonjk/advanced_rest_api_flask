@@ -29,15 +29,17 @@ class Item(Resource):
                         required=True,
                         help=BLANK_ERROR.format('store_id'))
 
+    @classmethod
     @jwt_required
-    def get(self, name: str):
+    def get(cls, name: str):
         item = ItemModel.find_by_name(name)
         if item:
             return item.json(), 200
         return {'message': ITEM_NOT_FOUND.format(name)}, 404
 
+    @classmethod
     @fresh_jwt_required
-    def post(self, name: str):
+    def post(cls, name: str):
         user = UserModel.find_by_id(get_jwt_identity())
         print(USER_INFO.format(user.username, name))
         if ItemModel.find_by_name(name) is not None:
@@ -52,16 +54,18 @@ class Item(Resource):
 
         return new_item.json(), 201
 
+    @classmethod
     @fresh_jwt_required
-    def delete(self, name: str):
+    def delete(cls, name: str):
         item = ItemModel.find_by_name(name)
         if item:
             item.delete_from_db()
             return {'message': DELETED.format(name)}
         return {'message': ITEM_NOT_FOUND.format(name)}, 404
 
+    @classmethod
     @fresh_jwt_required
-    def put(self, name: str):
+    def put(cls, name: str):
         data = Item.parser.parse_args()
         item = ItemModel.find_by_name(name)
         if item is None:
@@ -74,8 +78,9 @@ class Item(Resource):
 
 
 class ItemList(Resource):
+    @classmethod
     @jwt_optional
-    def get(self):
+    def get(cls):
         items = [item.json() for item in ItemModel.find_all()]
         if get_jwt_identity():
             return {'items': items}, 200

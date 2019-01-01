@@ -1,7 +1,6 @@
 from flask import Flask, jsonify
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
-from datetime import timedelta
 from blacklist import BLACKLIST
 
 from resources.user import (
@@ -94,6 +93,5 @@ api.add_resource(TokenRefresh, '/refresh')
 
 if __name__ == '__main__':
     from database import db
-    
     db.init_app(app)
     app.run(port=5000, debug=True)
