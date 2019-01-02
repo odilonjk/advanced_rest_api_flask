@@ -1,0 +1,19 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+gunicorn = "==19.9.0"
+mypy = "==0.650"
+pep8 = "==1.7.1"
+Flask = "==1.0.2"
+Flask-JWT-Extended = "==3.14.0"
+Flask-RESTful = "==0.3.7"
+Flask-SQLAlchemy = "==2.3.2"
+SQLAlchemy = "==1.2.15"
+
+[requires]
+python_version = "3.7"
