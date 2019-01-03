@@ -30,19 +30,16 @@ class UserRegister(Resource):
     @classmethod
     def post(cls):
         try:
-            user_data = user_schema.load(request.get_json())
+            user = user_schema.load(request.get_json())
         except ValidationError as err:
             return err.messages, 400
 
-        username = user_data['username']
+        if UserModel.find_by_username(user.username):
+            return {'message': USER_ALREADY_EXISTS.format(user.username)}, 400
 
-        if UserModel.find_by_username(username):
-            return {'message': USER_ALREADY_EXISTS.format(username)}, 400
-
-        user = UserModel(**user_data)
         user.save_to_db()
 
-        return {'message': USER_CREATED.format(username)}, 201
+        return {'message': USER_CREATED.format(user.username)}, 201
 
 
 class User(Resource):
@@ -66,11 +63,11 @@ class UserLogin(Resource):
     @classmethod
     def post(cls):
         try:
-            user_data = user_schema.load(request.get_json())
+            new_user = user_schema.load(request.get_json())
         except ValidationError as err:
             return err.messages, 400
-        user = UserModel.find_by_username(user_data['username'])
-        if user and safe_str_cmp(user.password, user_data['password']):
+        user = UserModel.find_by_username(new_user.username)
+        if user and safe_str_cmp(user.password, new_user.password):
             access_token = create_access_token(identity=user.id, fresh=True)
             refresh_token = create_refresh_token(user.id)
             return {

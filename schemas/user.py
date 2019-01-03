@@ -1,12 +1,9 @@
-from marshmallow import Schema, fields
+from ma import ma
+from models.user import UserModel
 
 
-class UserSchema(Schema):
+class UserSchema(ma.ModelSchema):
     class Meta:
-        load_only = ('password',)
+        model = UserModel
+        load_only = ('password','is_admin')
         dump_only = ('id',)
-
-    id = fields.Int()
-    username = fields.Str(required=True)
-    password = fields.Str(requited=True)
-    is_admin = fields.Bool(required=False)

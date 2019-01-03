@@ -7,14 +7,9 @@ UserJSON = Dict[str, Union[int, str, bool]]
 class UserModel(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(90))
-    password = db.Column(db.String(90))
-    is_admin = db.Column(db.Boolean)
-
-    def __init__(self, username: str, password: str, is_admin: bool = False):
-        self.username = username
-        self.password = password
-        self.is_admin = is_admin
+    username = db.Column(db.String(90), nullable=False, unique=True)
+    password = db.Column(db.String(90), nullable=False)
+    is_admin = db.Column(db.Boolean, nullable=False)
 
     def save_to_db(self):
         db.session.add(self)
