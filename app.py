@@ -12,6 +12,7 @@ from resources.user import (
 )
 from resources.item import Item, ItemList
 from resources.store import Store, StoreList
+from marshmallow import ValidationError
 from ma import ma
 
 app = Flask(__name__)
@@ -79,6 +80,12 @@ def revoked_token_callback():
         'description': 'The token has been revoked.',
         'error': 'token_revoked'
     }), 401
+
+
+@app.errorhandler(ValidationError)
+def handle_marshmallow_validation(err):
+    return jsonify(err.messages), 400
+
 
 api.add_resource(Item, '/item/<string:name>')
 api.add_resource(ItemList, '/items')

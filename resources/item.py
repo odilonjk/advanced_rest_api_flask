@@ -42,10 +42,7 @@ class Item(Resource):
         item_json = request.get_json()
         item_json['name'] = name
 
-        try:
-            item = item_schema.load(item_json)
-        except ValidationError as err:
-            return err.message, 400
+        item = item_schema.load(item_json)
 
         try:
             item.save_to_db()
@@ -69,10 +66,7 @@ class Item(Resource):
         item_json = request.get_json()
         item_json['name'] = name
 
-        try:
-            update_item = item_schema.load(item_json)
-        except ValidationError as err:
-            return err.message, 400
+        update_item = item_schema.load(item_json)
 
         item = ItemModel.find_by_name(name)
         if item is None:
