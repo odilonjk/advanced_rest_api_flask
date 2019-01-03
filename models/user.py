@@ -9,9 +9,9 @@ class UserModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(90))
     password = db.Column(db.String(90))
-    is_admin = db.Column(db.Boolean, default=False)
+    is_admin = db.Column(db.Boolean)
 
-    def __init__(self, username: str, password: str, is_admin: bool):
+    def __init__(self, username: str, password: str, is_admin: bool = False):
         self.username = username
         self.password = password
         self.is_admin = is_admin
@@ -31,10 +31,3 @@ class UserModel(db.Model):
     @classmethod
     def find_by_id(cls, _id: int) -> 'UserModel':
         return cls.query.filter_by(id=_id).first()
-
-    def json(self) -> UserJSON:
-        return {
-            'id': self.id,
-            'username': self.username,
-            'is_admin': self.is_admin
-        }

@@ -1,8 +1,11 @@
 import sqlite3
-from flask_restful import Resource, reqparse, inputs
+from flask import request
+from flask_restful import Resource, inputs
 from werkzeug.security import safe_str_cmp
 from models.user import UserModel
 from blacklist import BLACKLIST
+from schemas.user import UserSchema
+from marshmallow import ValidationError
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -20,33 +23,23 @@ USER_ALREADY_EXISTS = 'The user {} already exists.'
 USER_CREATED = 'User {} created successfully.'
 USER_NOT_FOUND = 'User not found'
 
-
-_user_parser = reqparse.RequestParser()
-_user_parser.add_argument('username',
-                          type=str,
-                          required=True,
-                          help=BLANK_ERROR.format('username'))
-
-_user_parser.add_argument('password',
-                          type=str,
-                          required=True,
-                          help=BLANK_ERROR.format('password'))
-
-_user_parser.add_argument('is_admin',
-                          type=inputs.boolean,
-                          required=False)
+user_schema = UserSchema()
 
 
 class UserRegister(Resource):
     @classmethod
     def post(cls):
-        data = _user_parser.parse_args()
-        username = data['username']
+        try:
+            user_data = user_schema.load(request.get_json())
+        except ValidationError as err:
+            return err.messages, 400
+
+        username = user_data['username']
 
         if UserModel.find_by_username(username):
             return {'message': USER_ALREADY_EXISTS.format(username)}, 400
 
-        user = UserModel(**data)
+        user = UserModel(**user_data)
         user.save_to_db()
 
         return {'message': USER_CREATED.format(username)}, 201
@@ -58,7 +51,7 @@ class User(Resource):
         user = UserModel.find_by_id(user_id)
         if not user:
             return {'message': USER_NOT_FOUND}, 404
-        return user.json()
+        return user_schema.dump(user), 200
 
     @classmethod
     def delete(cls, user_id: int):
@@ -72,9 +65,12 @@ class User(Resource):
 class UserLogin(Resource):
     @classmethod
     def post(cls):
-        data = _user_parser.parse_args()
-        user = UserModel.find_by_username(data['username'])
-        if user and safe_str_cmp(user.password, data['password']):
+        try:
+            user_data = user_schema.load(request.get_json())
+        except ValidationError as err:
+            return err.messages, 400
+        user = UserModel.find_by_username(user_data['username'])
+        if user and safe_str_cmp(user.password, user_data['password']):
             access_token = create_access_token(identity=user.id, fresh=True)
             refresh_token = create_refresh_token(user.id)
             return {
