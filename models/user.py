@@ -1,15 +1,13 @@
 from typing import Dict, Union
 from database import db
 
-UserJSON = Dict[str, Union[int, str, bool]]
-
 
 class UserModel(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(90), nullable=False, unique=True)
     password = db.Column(db.String(90), nullable=False)
-    is_admin = db.Column(db.Boolean, nullable=False)
+    is_admin = db.Column(db.Boolean, nullable=False, default=False)
 
     def save_to_db(self):
         db.session.add(self)
