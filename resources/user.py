@@ -49,6 +49,7 @@ class UserRegister(Resource):
             return {'message': USER_CREATED.format(user.username)}, 201
         except:
             traceback.print_exc()
+            user.delete_from_db()
             return {'message': FAILED_TO_CREATE}, 500
 
 

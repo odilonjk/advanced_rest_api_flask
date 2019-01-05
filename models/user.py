@@ -1,13 +1,9 @@
 from typing import Dict, Union
 from database import db
 from flask import request
-from requests import Response, post
+from requests import Response
 from flask import request, url_for
-
-MAILGUN_DOMAIN = 'sandbox7774f5aea48d4e29a723063289131582.mailgun.org'
-MAILGUN_API_KEY = 'ae032876014905a8828b2267fa5e52c6-49a2671e-8f171534'
-FROM_TITLE = 'Stores REST API'
-FROM_EMAIL = 'postmaster@sandbox7774f5aea48d4e29a723063289131582.mailgun.org'
+from libs.mailgun import Mailgun
 
 
 class UserModel(db.Model):
@@ -28,18 +24,10 @@ class UserModel(db.Model):
         db.session.commit()
 
     def send_confirmation_email(self) -> Response:
-        print('Sending confirmation email to {}'.format(self.username))
         link = request.url_root[0:-1] + url_for('useractivation', user_id=self.id)
-        return post(
-            f'http://api.mailgun.net/v3/{MAILGUN_DOMAIN}/messages',
-            auth=('api', MAILGUN_API_KEY),
-            data={
-                'from': f'{FROM_TITLE} <{FROM_EMAIL}>',
-                'to': self.email,
-                'subject': 'Registration confirmation.',
-                'text': f'Please click the link to confirm your registration: {link}',
-            }
-        )
+        subject = 'Registration confirmation'
+        text = f'Please click the link to confirm your registration: {link}'
+        return Mailgun.send_confirmation_email(emails=[self.email], subject=subject, text=text)
 
     @classmethod
     def find_by_username(cls, username: str) -> 'UserModel':
