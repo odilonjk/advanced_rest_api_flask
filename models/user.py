@@ -8,6 +8,7 @@ class UserModel(db.Model):
     username = db.Column(db.String(90), nullable=False, unique=True)
     password = db.Column(db.String(90), nullable=False)
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
+    activated = db.Column(db.Boolean, nullable=False, default=False)
 
     def save_to_db(self):
         db.session.add(self)

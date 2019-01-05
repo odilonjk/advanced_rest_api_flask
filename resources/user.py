@@ -22,6 +22,7 @@ LOGGED_OUT = 'Successfully logged out.'
 USER_ALREADY_EXISTS = 'The user {} already exists.'
 USER_CREATED = 'User {} created successfully.'
 USER_NOT_FOUND = 'User not found'
+NOT_CONFIRMED_USER = 'You have not confirmed {} registration'
 
 user_schema = UserSchema()
 
@@ -29,10 +30,7 @@ user_schema = UserSchema()
 class UserRegister(Resource):
     @classmethod
     def post(cls):
-        try:
-            user = user_schema.load(request.get_json())
-        except ValidationError as err:
-            return err.messages, 400
+        user = user_schema.load(request.get_json())
 
         if UserModel.find_by_username(user.username):
             return {'message': USER_ALREADY_EXISTS.format(user.username)}, 400
@@ -62,18 +60,19 @@ class User(Resource):
 class UserLogin(Resource):
     @classmethod
     def post(cls):
-        try:
-            new_user = user_schema.load(request.get_json())
-        except ValidationError as err:
-            return err.messages, 400
-        user = UserModel.find_by_username(new_user.username)
-        if user and safe_str_cmp(user.password, new_user.password):
-            access_token = create_access_token(identity=user.id, fresh=True)
-            refresh_token = create_refresh_token(user.id)
-            return {
-                'access_token': access_token,
-                'refresh_token': refresh_token
-            }, 200
+        login_user = user_schema.load(request.get_json())
+
+        user = UserModel.find_by_username(login_user.username)
+        if user and safe_str_cmp(user.password, login_user.password):
+            if user.activated:
+                access_token = create_access_token(identity=user.id, fresh=True)
+                refresh_token = create_refresh_token(user.id)
+                return {
+                    'access_token': access_token,
+                    'refresh_token': refresh_token
+                }, 200
+            else:
+                return {'message': NOT_CONFIRMED_USER.format(user.username)}
         return {'message': INVALID_CREDENTIALS}
 
 
