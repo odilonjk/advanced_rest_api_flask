@@ -1,5 +1,6 @@
 import sqlite3
-from flask import request
+import traceback
+from flask import request, make_response, render_template
 from flask_restful import Resource, inputs
 from werkzeug.security import safe_str_cmp
 from models.user import UserModel
@@ -25,6 +26,8 @@ USER_NOT_FOUND = 'User not found'
 USER_CONFIRMED = '{} was successfully actived.'
 USER_ALREADY_CONFIRMED = '{} is already confirmed.'
 NOT_CONFIRMED_USER = 'You have not confirmed {} registration'
+EMAIL_ALREADY_IN_USE = 'The email {} is already in use.'
+FAILED_TO_CREATE = 'Failed to create user.'
 
 user_schema = UserSchema()
 
@@ -37,9 +40,16 @@ class UserRegister(Resource):
         if UserModel.find_by_username(user.username):
             return {'message': USER_ALREADY_EXISTS.format(user.username)}, 400
 
-        user.save_to_db()
+        if UserModel.find_by_email(user.email):
+            return {'message': EMAIL_ALREADY_IN_USE.format(user.username)}, 400
 
-        return {'message': USER_CREATED.format(user.username)}, 201
+        try:
+            user.save_to_db()
+            user.send_confirmation_email()
+            return {'message': USER_CREATED.format(user.username)}, 201
+        except:
+            traceback.print_exc()
+            return {'message': FAILED_TO_CREATE}, 500
 
 
 class User(Resource):
@@ -62,7 +72,7 @@ class User(Resource):
 class UserLogin(Resource):
     @classmethod
     def post(cls):
-        login_user = user_schema.load(request.get_json())
+        login_user = user_schema.load(request.get_json(), partial=('email',))
 
         user = UserModel.find_by_username(login_user.username)
         if not (user and safe_str_cmp(user.password, login_user.password)):
@@ -99,9 +109,8 @@ class TokenRefresh(Resource):
 
 class UserActivation(Resource):
     @classmethod
-    def post(cls):
-        id = request.get_json()['id']
-        user = UserModel.find_by_id(id)
+    def get(cls, user_id: int):
+        user = UserModel.find_by_id(user_id)
 
         if not user:
             return {'message': USER_NOT_FOUND}, 404
@@ -111,4 +120,5 @@ class UserActivation(Resource):
 
         user.activated = True
         user.save_to_db()
-        return {'message': USER_CONFIRMED.format(user.username)}, 200
+        headers = {'Content-Type': 'text/html'}
+        return make_response(render_template('confirmation_page.html', email=user.email), 200, headers)

@@ -16,6 +16,7 @@ Flask-JWT-Extended = "==3.14.0"
 Flask-RESTful = "==0.3.7"
 Flask-SQLAlchemy = "==2.3.2"
 SQLAlchemy = "==1.2.15"
+requests = "*"
 
 [requires]
 python_version = "3.7"
