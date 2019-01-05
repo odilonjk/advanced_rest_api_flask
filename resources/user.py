@@ -22,6 +22,8 @@ LOGGED_OUT = 'Successfully logged out.'
 USER_ALREADY_EXISTS = 'The user {} already exists.'
 USER_CREATED = 'User {} created successfully.'
 USER_NOT_FOUND = 'User not found'
+USER_CONFIRMED = '{} was successfully actived.'
+USER_ALREADY_CONFIRMED = '{} is already confirmed.'
 NOT_CONFIRMED_USER = 'You have not confirmed {} registration'
 
 user_schema = UserSchema()
@@ -63,17 +65,18 @@ class UserLogin(Resource):
         login_user = user_schema.load(request.get_json())
 
         user = UserModel.find_by_username(login_user.username)
-        if user and safe_str_cmp(user.password, login_user.password):
-            if user.activated:
-                access_token = create_access_token(identity=user.id, fresh=True)
-                refresh_token = create_refresh_token(user.id)
-                return {
-                    'access_token': access_token,
-                    'refresh_token': refresh_token
-                }, 200
-            else:
-                return {'message': NOT_CONFIRMED_USER.format(user.username)}
-        return {'message': INVALID_CREDENTIALS}
+        if not (user and safe_str_cmp(user.password, login_user.password)):
+            return {'message': INVALID_CREDENTIALS}, 403
+
+        if not user.activated:
+                return {'message': NOT_CONFIRMED_USER.format(user.username)}, 400
+
+        access_token = create_access_token(identity=user.id, fresh=True)
+        refresh_token = create_refresh_token(user.id)
+        return {
+            'access_token': access_token,
+            'refresh_token': refresh_token
+        }, 200
 
 
 class UserLogout(Resource):
@@ -92,3 +95,20 @@ class TokenRefresh(Resource):
         current_user = get_jwt_identity()
         new_token = create_access_token(identity=current_user, fresh=False)
         return {'access_token': new_token}, 200
+
+
+class UserActivation(Resource):
+    @classmethod
+    def post(cls):
+        id = request.get_json()['id']
+        user = UserModel.find_by_id(id)
+
+        if not user:
+            return {'message': USER_NOT_FOUND}, 404
+
+        if user.activated:
+            return {'message': USER_ALREADY_CONFIRMED.format(user.username)}, 400
+
+        user.activated = True
+        user.save_to_db()
+        return {'message': USER_CONFIRMED.format(user.username)}, 200
