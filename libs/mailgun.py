@@ -3,6 +3,15 @@ from typing import List
 from requests import Response, post
 from flask import request, url_for
 
+ERROR_SENDING_EMAIL = 'Error sending confirmation email.'
+FAILED_TO_LOAD_API_KEY = 'Failed to load MailGun API Key.'
+FAILED_TO_LOAD_DOMAIN = 'Failed to load MailGun Domain.'
+
+
+class MailGunException(Exception):
+    def __init__(self, message: str):
+        super().__init__(message)
+
 
 class Mailgun:
     MAILGUN_DOMAIN = os.environ.get('MAILGUN_DOMAIN')
@@ -12,7 +21,11 @@ class Mailgun:
 
     @classmethod
     def send_confirmation_email(cls, emails: List[str], subject: str, text: str) -> Response:
-            return post(
+            if cls.MAILGUN_API_KEY is None:
+                raise MailGunException(FAILED_TO_LOAD_API_KEY)
+            if cls.MAILGUN_DOMAIN is None:
+                raise MailGunException(FAILED_TO_LOAD_DOMAIN)
+            response = post(
                 f'http://api.mailgun.net/v3/{cls.MAILGUN_DOMAIN}/messages',
                 auth=('api', cls.MAILGUN_API_KEY),
                 data={
@@ -22,3 +35,5 @@ class Mailgun:
                     'text': text
                 }
             )
+            if response.status_code != 200:
+                raise MailGunException(ERROR_SENDING_EMAIL)

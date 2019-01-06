@@ -7,6 +7,7 @@ from models.user import UserModel
 from blacklist import BLACKLIST
 from schemas.user import UserSchema
 from marshmallow import ValidationError
+from libs.mailgun import MailGunException
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -47,9 +48,11 @@ class UserRegister(Resource):
             user.save_to_db()
             user.send_confirmation_email()
             return {'message': USER_CREATED.format(user.username)}, 201
+        except MailGunException as e:
+            user.delete_from_db()
+            return {'message': str(e)}, 500
         except:
             traceback.print_exc()
-            user.delete_from_db()
             return {'message': FAILED_TO_CREATE}, 500
 
 
