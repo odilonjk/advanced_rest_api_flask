@@ -1,11 +1,8 @@
 import sqlite3
 import traceback
-from flask import request, make_response, render_template
+from flask import request
 from flask_restful import Resource, inputs
 from werkzeug.security import safe_str_cmp
-from models.user import UserModel
-from blacklist import BLACKLIST
-from schemas.user import UserSchema
 from marshmallow import ValidationError
 from libs.mailgun import MailGunException
 from flask_jwt_extended import (
@@ -16,6 +13,10 @@ from flask_jwt_extended import (
     get_raw_jwt,
     jwt_required,
 )
+from models.user import UserModel
+from blacklist import BLACKLIST
+from schemas.user import UserSchema
+from models.confirmation import ConfirmationModel
 
 BLANK_ERROR = '{} cannot be blank.'
 DELETED = '{} deleted.'
@@ -46,6 +47,8 @@ class UserRegister(Resource):
 
         try:
             user.save_to_db()
+            confirmation = ConfirmationModel(user.id)
+            confirmation.save_to_db()
             user.send_confirmation_email()
             return {'message': USER_CREATED.format(user.username)}, 201
         except MailGunException as e:
@@ -53,6 +56,7 @@ class UserRegister(Resource):
             return {'message': str(e)}, 500
         except:
             traceback.print_exc()
+            user.delete_from_db()
             return {'message': FAILED_TO_CREATE}, 500
 
 
@@ -82,7 +86,8 @@ class UserLogin(Resource):
         if not (user and safe_str_cmp(user.password, login_user.password)):
             return {'message': INVALID_CREDENTIALS}, 403
 
-        if not user.activated:
+        confirmation = user.most_recent_confirmation
+        if not confirmation or not confirmation.confirmed:
                 return {'message': NOT_CONFIRMED_USER.format(user.username)}, 400
 
         access_token = create_access_token(identity=user.id, fresh=True)
@@ -109,20 +114,3 @@ class TokenRefresh(Resource):
         current_user = get_jwt_identity()
         new_token = create_access_token(identity=current_user, fresh=False)
         return {'access_token': new_token}, 200
-
-
-class UserActivation(Resource):
-    @classmethod
-    def get(cls, user_id: int):
-        user = UserModel.find_by_id(user_id)
-
-        if not user:
-            return {'message': USER_NOT_FOUND}, 404
-
-        if user.activated:
-            return {'message': USER_ALREADY_CONFIRMED.format(user.username)}, 400
-
-        user.activated = True
-        user.save_to_db()
-        headers = {'Content-Type': 'text/html'}
-        return make_response(render_template('confirmation_page.html', email=user.email), 200, headers)

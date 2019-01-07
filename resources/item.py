@@ -6,10 +6,11 @@ from flask_jwt_extended import (
 )
 from flask import request
 from flask_restful import Resource, reqparse
+from marshmallow import ValidationError
+
 from models.item import ItemModel
 from models.user import UserModel
 from schemas.item import ItemSchema
-from marshmallow import ValidationError
 
 ERROR_POST_ITEM = 'An error occurred inserting the item.'
 ITEM_ALREADY_EXISTS = 'An item called {} already exists.'
