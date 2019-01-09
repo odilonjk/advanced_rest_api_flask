@@ -16,7 +16,7 @@ class UserModel(db.Model):
     email = db.Column(db.String(90), nullable=False, unique=True)
 
     confirmation = db.relationship(
-        'ConfirmationModel', laze='dynamic', cascade='all, delete-orphan'
+        'ConfirmationModel', lazy='dynamic', cascade='all, delete-orphan'
     )
 
     @property
@@ -40,7 +40,7 @@ class UserModel(db.Model):
         return Mailgun.send_confirmation_email(emails=[self.email], subject=subject, text=text)
 
     @classmethod
-    def find_by_username(cls, username: str) -> 'UserModel':
+    def find_by_username(cls, username: str) -> 'U/home/krg/workspace/python/advanced_rest_api_flask/models/user.pyserModel':
         return cls.query.filter_by(username=username).first()
 
     @classmethod
