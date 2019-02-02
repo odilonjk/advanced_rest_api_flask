@@ -18,6 +18,7 @@ Flask-SQLAlchemy = "==2.3.2"
 SQLAlchemy = "==1.2.15"
 requests = "*"
 python-dotenv = "*"
+flask-uploads = "*"
 
 [requires]
 python_version = "3.7"
