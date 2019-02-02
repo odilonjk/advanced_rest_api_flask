@@ -17,10 +17,15 @@
     "mailgun_failed_to_load_domain": "Falha ao carregar o domínio do MailGun.",
 
     "security_invalid_credentials": "Credenciais inválidas.",
+    "secutity_invalid_signature": "Falha na verificação da assinatura.",
     "security_more_data_available": "Mais informações disponíveis caso você esteja logado.",
     "security_only_admin": "Apenas usuários com nível administrador conseguem executar esta tarefa.",
+    "security_request_without_token": "A requisição não possui um token de acesso.",
+    "security_token_expired": "O token está expirado.",
+    "security_token_not_fresh": "O token não é novo.",
+    "security_token_revoked": "O token foi revogado.",
     "security_user_post_log": "{} está tentando criar um novo item chamado {}.",
-    
+
     "store_already_exists": "Já existe uma loja chamada {}.",
     "store_error_creating": "Falha na tentativa de criação da nova loja.",
     "store_not_found": "Não existe uma loja chamada {}.",

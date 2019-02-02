@@ -1,8 +1,16 @@
 import os
+
 from flask import Flask, jsonify
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
+
 from blacklist import BLACKLIST
+from libs.strings import gettext
+from ma import ma
+from marshmallow import ValidationError
+from resources.confirmation import Confirmation, ConfirmationByUser
+from resources.item import Item, ItemList
+from resources.store import Store, StoreList
 from resources.user import (
     User,
     UserRegister,
@@ -11,11 +19,6 @@ from resources.user import (
     UserModel,
     TokenRefresh,
 )
-from resources.item import Item, ItemList
-from resources.store import Store, StoreList
-from resources.confirmation import Confirmation, ConfirmationByUser
-from marshmallow import ValidationError
-from ma import ma
 
 app = Flask(__name__)
 
@@ -47,7 +50,7 @@ def check_if_token_in_blacklist(decrypted_token):
 @jwt.expired_token_loader
 def expired_token_callback():
     return jsonify({
-        'description': 'The token has expired.',
+        'description': gettext("security_token_expired"),
         'error': 'token_expired'
     }), 401
 
@@ -55,7 +58,7 @@ def expired_token_callback():
 @jwt.invalid_token_loader
 def invalid_token_callback(err):
     return jsonify({
-        'description': 'Signature verification failed.',
+        'description': gettext("secutity_invalid_signature"),
         'error': 'invalid_token'
     }), 401
 
@@ -63,7 +66,7 @@ def invalid_token_callback(err):
 @jwt.unauthorized_loader
 def missing_token_callback(err):
     return jsonify({
-        'description': 'Request does not contain an access token.',
+        'description': gettext("security_request_without_token"),
         'error': 'token_required'
     }), 401
 
@@ -71,7 +74,7 @@ def missing_token_callback(err):
 @jwt.needs_fresh_token_loader
 def needs_fresh_token_callback():
     return jsonify({
-        'description': 'The token is not fresh.',
+        'description': gettext("security_token_not_fresh"),
         'error': 'fresh_token_required'
     }), 401
 
@@ -79,7 +82,7 @@ def needs_fresh_token_callback():
 @jwt.revoked_token_loader
 def revoked_token_callback():
     return jsonify({
-        'description': 'The token has been revoked.',
+        'description': gettext("security_token_revoked"),
         'error': 'token_revoked'
     }), 401
 

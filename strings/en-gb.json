@@ -16,11 +16,16 @@
     "mailgun_failed_to_load_api_key": "Failed to load MailGun API Key.",
     "mailgun_failed_to_load_domain": "Failed to load MailGun Domain.",
 
-    "security_invalid_credentials": "Invalid credentials",
+    "security_invalid_credentials": "Invalid credentials.",
+    "secutity_invalid_signature": "Signature verification failed.",
     "security_more_data_available": "More data available if you log in.",
     "security_only_admin": "Only admin users can execute this operation.",
+    "security_request_without_token": "Request does not contain an access token.",
+    "security_token_expired": "The token has expired.",
+    "security_token_not_fresh": "The token is not fresh.",
+    "security_token_revoked": "The token has been revoked.",
     "security_user_post_log": "{} is trying to create a new item called {}.",
-    
+
     "store_already_exists": "An store called {} already exists.",
     "store_error_creating": "An error occurred creating the store.",
     "store_not_found": "There is no store called {}.",
