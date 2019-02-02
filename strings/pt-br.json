@@ -1,0 +1,37 @@
+{
+    "confirmation_already_confirmed": "O usuário já está confirmado.",
+    "confirmation_expired": "Confirmação expirada.",
+    "confirmation_not_found": "Confirmação não encontrada.",
+    "confirmation_resend_successful": "Email de confirmação reenviado com sucesso.",
+    "confirmation_resend_fail": "Falha ao realizar tentativa de reenvio do email de confirmação.",
+    
+    "generic_deleted": "{} removido.",
+    "generic_blank_error": "{} não pode ser deixado em branco.",
+
+    "item_already_exists": "Já existe um item chamado {}.",
+    "item_error_creating": "Falha na tentativa de criação do novo item.",
+    "item_not_found": "Não existe um item chamado {}.",
+
+    "mailgun_error_sending_email": "Falha ao realizar tentativa de envio do email de confirmação.",
+    "mailgun_failed_to_load_api_key": "Falha ao carregar a chave utilizada na MailGun API.",
+    "mailgun_failed_to_load_domain": "Falha ao carregar o domínio do MailGun.",
+
+    "security_invalid_credentials": "Credenciais inválidas.",
+    "security_more_data_available": "Mais informações disponíveis caso você esteja logado.",
+    "security_only_admin": "Apenas usuários com nível administrador conseguem executar esta tarefa.",
+    "security_user_post_log": "{} está tentando criar um novo item chamado {}.",
+    
+    "store_already_exists": "Já existe uma loja chamada {}.",
+    "store_error_creating": "Falha na tentativa de criação da nova loja.",
+    "store_not_found": "Não existe uma loja chamada {}.",
+           
+    "user_activated": "Usuário {} foi ativo com sucesso.",
+    "user_already_confirmed": "O usuário {} já realizou sua confirmação.",
+    "user_already_exists": "Já existe um usuário chamado {}.",
+    "user_created": "Usuário {} criado com sucesso.",
+    "user_email_exists": "O e-mail {} já está em uso por outro usuário.",
+    "user_error_creating": "Falha na tentativa de criação do usuário.",
+    "user_logged_out": "Você foi deslogado com sucesso.",
+    "user_not_confirmed": "O usuário {} ainda não confirmou seu registro.",
+    "user_not_found": "Usuário não encontrado."
+}

@@ -5,11 +5,6 @@ from flask_restful import Resource, reqparse
 from models.store import StoreModel
 from schemas.store import StoreSchema
 
-DELETED = '{} deleted.'
-ERROR_POST_STORE = 'An error occurred inserting the store.'
-ONLY_ADMIN = 'Only admin users can execute this operation.'
-STORE_ALREADY_EXISTS = 'An store called {} already exists.'
-STORE_NOT_FOUND = 'There is no store called {}.'
 
 store_schema = StoreSchema()
 store_list_schema = StoreSchema(many=True)

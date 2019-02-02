@@ -1,0 +1,37 @@
+{
+    "confirmation_already_confirmed": "User already confirmed.",
+    "confirmation_expired": "Confirmation expired.",
+    "confirmation_not_found": "Confirmation not found.",
+    "confirmation_resend_successful": "Confirmation email sucessfully re-sent.",
+    "confirmation_resend_fail": "Failed to resend confirmation email.",
+    
+    "generic_deleted": "{} deleted.",
+    "generic_blank_error": "{} cannot be blank.",
+
+    "item_already_exists": "An item called {} already exists.",
+    "item_error_creating": "An error occurred creating the item.",
+    "item_not_found": "There is no item called {}.",
+
+    "mailgun_error_sending_email": "Error sending confirmation email.",
+    "mailgun_failed_to_load_api_key": "Failed to load MailGun API Key.",
+    "mailgun_failed_to_load_domain": "Failed to load MailGun Domain.",
+
+    "security_invalid_credentials": "Invalid credentials",
+    "security_more_data_available": "More data available if you log in.",
+    "security_only_admin": "Only admin users can execute this operation.",
+    "security_user_post_log": "{} is trying to create a new item called {}.",
+    
+    "store_already_exists": "An store called {} already exists.",
+    "store_error_creating": "An error occurred creating the store.",
+    "store_not_found": "There is no store called {}.",
+           
+    "user_activated": "{} was successfully actived.",
+    "user_already_confirmed": "{} is already confirmed.",
+    "user_already_exists": "The user {} already exists.",
+    "user_created": "User {} created successfully.",
+    "user_email_exists": "The email {} is already in use by another user.",
+    "user_error_creating": "Failed to create user.",
+    "user_logged_out": "Successfully logged out.",
+    "user_not_confirmed": "You have not confirmed {} registration",
+    "user_not_found": "User not found."
+}
