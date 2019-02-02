@@ -20,7 +20,7 @@ class Mailgun:
     MAILGUN_DOMAIN = os.environ.get("MAILGUN_DOMAIN")
     MAILGUN_API_KEY = os.environ.get("MAILGUN_API_KEY")
     FROM_TITLE = "Stores REST API"
-    FROM_EMAIL = "postmaster@sandbox7774f5aea48d4e29a723063289131582.mailgun.org"
+    FROM_EMAIL = "do-not-reply@{MAILGUN_DOMAIN}"
 
     @classmethod
     def send_confirmation_email(cls, emails: List[str], subject: str, text: str) -> Response:
