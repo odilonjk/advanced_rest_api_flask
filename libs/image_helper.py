@@ -40,7 +40,7 @@ def _retrieve_filename(file: Union[str, FileStorage]) -> str:
     return file
 
 
-def if_filename_safe(file: Union[str, FileStorage]) -> bool:
+def is_filename_safe(file: Union[str, FileStorage]) -> bool:
     """Check our regex and return whether the string matches."""
     filename = _retrieve_filename(file)
     allowed_format = "|".join(IMAGES)  # png|svg|jpeg|jpg|...

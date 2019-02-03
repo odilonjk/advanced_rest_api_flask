@@ -8,7 +8,10 @@
     "generic_deleted": "{} deleted.",
     "generic_blank_error": "{} cannot be blank.",
 
+    "image_delete_failed": "An error occured while trying to delete the image.",
     "image_extension_not_allowed": "The {} extension is not allowed to images.",
+    "image_illegal_file_name": "{} is an illegal file name.",
+    "image_not_found": "Image not found.",
     "image_not_valid": "Not a valid image.",
     "image_uploaded": "Image {} successfully uploaded.",
 
