@@ -26,7 +26,7 @@ def get_path(filename: str, folder: str) -> str:
 def find_image_any_format(filename: str, folder: str) -> Union[str, None]:
     """Takes a filename and returns an image of any of the supported formats."""
     for _format in IMAGES:
-        image = f"{filename}.{format}"
+        image = f"{filename}.{_format}"
         image_path = IMAGE_SET.path(filename=image, folder=folder)
         if os.path.isfile(image_path):
             return image_path

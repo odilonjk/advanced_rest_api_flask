@@ -1,4 +1,7 @@
 {
+    "avatar_delete_failed": "An error occured while trying to delete the old avatar.",
+    "avatar_uploaded": "Avatar successfully uploaded.",
+
     "confirmation_already_confirmed": "User already confirmed.",
     "confirmation_expired": "Confirmation expired.",
     "confirmation_not_found": "Confirmation not found.",
