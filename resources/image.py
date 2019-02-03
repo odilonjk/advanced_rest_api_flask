@@ -15,8 +15,9 @@ AVATAR_FOLDER = "avatars"
 
 
 class ImageUpload(Resource):
+    @classmethod
     @jwt_required
-    def post(self):
+    def post(cls):
         """
         Used to upload an image file.
         It uses JWT to retrieve user info and then saves the image to the user's folder.
@@ -36,8 +37,9 @@ class ImageUpload(Resource):
 
 
 class Image(Resource):
+    @classmethod
     @jwt_required
-    def get(self, filename: str):
+    def get(cls, filename: str):
         """Returns the requested image if it exists."""
         folder = f"user_{get_jwt_identity()}"
         if not image_helper.is_filename_safe(filename):
@@ -48,8 +50,9 @@ class Image(Resource):
         except FileNotFoundError:
             return {"message": gettext("image_not_found")}, 404
 
+    @classmethod
     @jwt_required
-    def delete(self, filename: str):
+    def delete(cls, filename: str):
         """Delete the image based on the file name."""
         folder = f"user_{get_jwt_identity()}"
         if not image_helper.is_filename_safe(filename):
@@ -66,8 +69,9 @@ class Image(Resource):
 
 
 class AvatarUpload(Resource):
+    @classmethod
     @jwt_required
-    def put(self):
+    def put(cls):
         """
         This endpoint is used to upload user avatars.
         Uploading a new avatar overwrites the existing one.
@@ -92,3 +96,15 @@ class AvatarUpload(Resource):
         except UploadNotAllowed:
             extension = image_helper.get_extension(image)
             return {"message": gettext("image_extension_not_allowed").format(extension)}, 400
+
+
+class Avatar(Resource):
+    @classmethod
+    @jwt_required
+    def get(cls, user_id: int):
+        folder = AVATAR_FOLDER
+        filename = f"user_{get_jwt_identity()}"
+        avatar_path = image_helper.find_image_any_format(filename, folder)
+        if avatar_path:
+            return send_file(avatar_path)
+        return {"message": gettext("image_not_found")}, 400
