@@ -1,15 +1,18 @@
 import os
 
-from flask import Flask, jsonify
-from flask_restful import Api
-from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
+from flask import Flask, jsonify
+from flask_jwt_extended import JWTManager
+from flask_restful import Api
+from flask_uploads import configure_uploads, patch_request_class
 
 from blacklist import BLACKLIST
+from libs.image_helper import IMAGE_SET
 from libs.strings import gettext
 from ma import ma
 from marshmallow import ValidationError
 from resources.confirmation import Confirmation, ConfirmationByUser
+from resources.image import ImageUpload
 from resources.item import Item, ItemList
 from resources.store import Store, StoreList
 from resources.user import (
@@ -22,12 +25,14 @@ from resources.user import (
 )
 
 app = Flask(__name__)
-
-
-api = Api(app)
 load_dotenv(".env", verbose=True)
 app.config.from_object("default_config")
 app.config.from_envvar("APPLICATION_SETTINGS")
+patch_request_class(app, 5 * 1024 * 1024)  # 5MB max size upload
+configure_uploads(app, IMAGE_SET)
+
+api = Api(app)
+
 jwt = JWTManager(app)
 
 
@@ -87,20 +92,21 @@ def handle_marshmallow_validation(err):
     return jsonify(err.messages), 400
 
 
+api.add_resource(Confirmation, '/user_confirmation/<string:confirmation_id>')
+api.add_resource(ConfirmationByUser, '/confirmation/user/<int:user_id>')
+api.add_resource(ImageUpload, '/image')
 api.add_resource(Item, '/item/<string:name>')
 api.add_resource(ItemList, '/items')
 api.add_resource(Store, '/store/<string:name>')
 api.add_resource(StoreList, '/stores')
+api.add_resource(TokenRefresh, '/refresh')
 api.add_resource(UserRegister, '/register')
 api.add_resource(User, '/user/<int:user_id>')
 api.add_resource(UserLogin, '/login')
 api.add_resource(UserLogout, '/logout')
-api.add_resource(Confirmation, '/user_confirmation/<string:confirmation_id>')
-api.add_resource(ConfirmationByUser, '/confirmation/user/<int:user_id>')
-api.add_resource(TokenRefresh, '/refresh')
 
 if __name__ == '__main__':
     from database import db
     db.init_app(app)
     ma.init_app(app)
-    app.run(port=5000, debug=True)
+    app.run(port=5000)

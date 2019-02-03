@@ -15,7 +15,6 @@ def refresh():
     """
     Reload the strings from the setted file.
     """
-    print('refreshing')
     global cached_strings
     with open(f"./strings/{default_locale}.json") as file:
         cached_strings = json.load(file)

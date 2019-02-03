@@ -8,7 +8,9 @@
     "generic_deleted": "{} removido.",
     "generic_blank_error": "{} não pode ser deixado em branco.",
 
+    "image_extension_not_allowed": "A extensão {} não é permitida para imagens.",
     "image_not_valid": "Não é uma imagem válida.",
+    "image_uploaded": "A imagem {} foi salva com sucesso.",
 
     "item_already_exists": "Já existe um item chamado {}.",
     "item_error_creating": "Falha na tentativa de criação do novo item.",
