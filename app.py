@@ -3,6 +3,7 @@ import os
 from flask import Flask, jsonify
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
+from dotenv import load_dotenv
 
 from blacklist import BLACKLIST
 from libs.strings import gettext
@@ -22,17 +23,11 @@ from resources.user import (
 
 app = Flask(__name__)
 
-app.config['JWT_SECRET_KEY'] = os.environ.get('APP_SECRET_KEY')
-app.config['JWT_BLACKLIST_ENABLED'] = True
-app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
-app.config['PROPAGATE_EXCEPTIONS'] = True
-
-# SQLAlchemy
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 api = Api(app)
-
+load_dotenv(".env", verbose=True)
+app.config.from_object("default_config")
+app.config.from_envvar("APPLICATION_SETTINGS")
 jwt = JWTManager(app)
 
 
