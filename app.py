@@ -5,8 +5,10 @@ from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
 from flask_uploads import configure_uploads, patch_request_class
+from flask_migrate import Migrate
 
 from blacklist import BLACKLIST
+from database import db
 from libs.image_helper import IMAGE_SET
 from libs.strings import gettext
 from ma import ma
@@ -30,10 +32,17 @@ app.config.from_object("default_config")
 app.config.from_envvar("APPLICATION_SETTINGS")
 patch_request_class(app, 5 * 1024 * 1024)  # 5MB max size upload
 configure_uploads(app, IMAGE_SET)
+db.init_app(app)
 
 api = Api(app)
 
 jwt = JWTManager(app)
+migrate = Migrate(app, db)
+
+
+@app.before_first_request
+def create_tables():
+    db.create_all()
 
 
 @jwt.user_claims_loader
