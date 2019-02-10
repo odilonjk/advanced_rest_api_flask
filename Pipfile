@@ -21,6 +21,7 @@ python-dotenv = "*"
 flask-uploads = "*"
 flask-migrate = "*"
 psycopg2 = "*"
+flask-oauthlib = "*"
 
 [requires]
 python_version = "3.7"

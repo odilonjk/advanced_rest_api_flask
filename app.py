@@ -7,15 +7,19 @@ from flask_restful import Api
 from flask_uploads import configure_uploads, patch_request_class
 from flask_migrate import Migrate
 
+load_dotenv(".env", verbose=True)
+
 from blacklist import BLACKLIST
 from database import db
 from libs.image_helper import IMAGE_SET
 from libs.strings import gettext
 from ma import ma
+from oa import oauth
 from marshmallow import ValidationError
 from resources.confirmation import Confirmation, ConfirmationByUser
 from resources.image import ImageUpload, Image, AvatarUpload, Avatar
 from resources.item import Item, ItemList
+from resources.github_login import GithubLogin
 from resources.store import Store, StoreList
 from resources.user import (
     User,
@@ -27,9 +31,9 @@ from resources.user import (
 )
 
 app = Flask(__name__)
-load_dotenv(".env", verbose=True)
 app.config.from_object("default_config")
 app.config.from_envvar("APPLICATION_SETTINGS")
+app.secret_key = "mysecret"
 patch_request_class(app, 5 * 1024 * 1024)  # 5MB max size upload
 configure_uploads(app, IMAGE_SET)
 db.init_app(app)
@@ -105,6 +109,7 @@ api.add_resource(AvatarUpload, '/avatar')
 api.add_resource(Avatar, '/avatar/<int:user_id>')
 api.add_resource(Confirmation, '/user_confirmation/<string:confirmation_id>')
 api.add_resource(ConfirmationByUser, '/confirmation/user/<int:user_id>')
+api.add_resource(GithubLogin, '/login/github')
 api.add_resource(Image, '/image/<string:filename>')
 api.add_resource(ImageUpload, '/image')
 api.add_resource(Item, '/item/<string:name>')
@@ -121,4 +126,5 @@ if __name__ == '__main__':
     from database import db
     db.init_app(app)
     ma.init_app(app)
+    oauth.init_app(app)
     app.run(port=5000)
