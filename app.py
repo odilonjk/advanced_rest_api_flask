@@ -19,7 +19,7 @@ from marshmallow import ValidationError
 from resources.confirmation import Confirmation, ConfirmationByUser
 from resources.image import ImageUpload, Image, AvatarUpload, Avatar
 from resources.item import Item, ItemList
-from resources.github_login import GithubLogin
+from resources.github_login import GithubLogin, GithubAuthorized
 from resources.store import Store, StoreList
 from resources.user import (
     User,
@@ -110,6 +110,7 @@ api.add_resource(Avatar, '/avatar/<int:user_id>')
 api.add_resource(Confirmation, '/user_confirmation/<string:confirmation_id>')
 api.add_resource(ConfirmationByUser, '/confirmation/user/<int:user_id>')
 api.add_resource(GithubLogin, '/login/github')
+api.add_resource(GithubAuthorized, '/login/github/authorized')
 api.add_resource(Image, '/image/<string:filename>')
 api.add_resource(ImageUpload, '/image')
 api.add_resource(Item, '/item/<string:name>')

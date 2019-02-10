@@ -11,9 +11,9 @@ class UserModel(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(90), nullable=False, unique=True)
-    password = db.Column(db.String(90), nullable=False)
+    password = db.Column(db.String(90))
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
-    email = db.Column(db.String(90), nullable=False, unique=True)
+    email = db.Column(db.String(90), unique=True)
 
     confirmation = db.relationship(
         'ConfirmationModel', lazy='dynamic', cascade='all, delete-orphan'
@@ -37,10 +37,12 @@ class UserModel(db.Model):
         )
         subject = 'Registration confirmation'
         text = f'Please click the link to confirm your registration: {link}'
-        return Mailgun.send_confirmation_email(emails=[self.email], subject=subject, text=text)
+        return Mailgun.send_confirmation_email(emails=[self.email],
+                                               subject=subject,
+                                               text=text)
 
     @classmethod
-    def find_by_username(cls, username: str) -> 'U/home/krg/workspace/python/advanced_rest_api_flask/models/user.pyserModel':
+    def find_by_username(cls, username: str) -> 'UserModel':
         return cls.query.filter_by(username=username).first()
 
     @classmethod
