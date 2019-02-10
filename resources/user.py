@@ -75,7 +75,7 @@ class UserLogin(Resource):
         login_user = user_schema.load(request.get_json(), partial=('email',))
 
         user = UserModel.find_by_username(login_user.username)
-        if not (user and safe_str_cmp(user.password, login_user.password)):
+        if not (user or user.password or safe_str_cmp(user.password, login_user.password)):
             return {'message': gettext("security_invalid_credentials")}, 403
 
         confirmation = user.most_recent_confirmation
