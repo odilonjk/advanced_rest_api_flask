@@ -48,5 +48,6 @@
     "user_error_creating": "Failed to create user.",
     "user_logged_out": "Successfully logged out.",
     "user_not_confirmed": "You have not confirmed {} registration",
-    "user_not_found": "User not found."
+    "user_not_found": "User not found.",
+    "user_password_updated": "Password updated."
 }

@@ -22,6 +22,7 @@ from resources.item import Item, ItemList
 from resources.github_login import GithubLogin, GithubAuthorized
 from resources.store import Store, StoreList
 from resources.user import (
+    SetPassword,
     User,
     UserRegister,
     UserLogin,
@@ -122,6 +123,7 @@ api.add_resource(UserRegister, '/register')
 api.add_resource(User, '/user/<int:user_id>')
 api.add_resource(UserLogin, '/login')
 api.add_resource(UserLogout, '/logout')
+api.add_resource(SetPassword, '/password')
 
 if __name__ == '__main__':
     from database import db

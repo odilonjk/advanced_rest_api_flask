@@ -48,5 +48,6 @@
     "user_error_creating": "Falha na tentativa de criação do usuário.",
     "user_logged_out": "Você foi deslogado com sucesso.",
     "user_not_confirmed": "O usuário {} ainda não confirmou seu registro.",
-    "user_not_found": "Usuário não encontrado."
+    "user_not_found": "Usuário não encontrado.",
+    "user_password_updated": "Senha atualizada."
 }

@@ -4,6 +4,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token
 from oa import github
 
 from models.user import UserModel
+from models.confirmation import ConfirmationModel
 from resources.user import UserLogin
 
 
@@ -32,6 +33,9 @@ class GithubAuthorized(Resource):
         if not user:
             user = UserModel(username=github_username, password=None)
             user.save_to_db()
+            confirmation = ConfirmationModel(user_id=user.id)
+            confirmation.confirmed = True
+            confirmation.save_to_db()
 
         access_token = create_access_token(identity=user.id, fresh=True)
         refresh_token = create_refresh_token(user.id)
